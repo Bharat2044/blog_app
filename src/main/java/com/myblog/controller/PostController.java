@@ -31,11 +31,19 @@ public class PostController {
         return new ResponseEntity<>(dto, HttpStatus.CREATED);
     }
 
-    // GET http://localhost:8080/api/posts
+    // GET http://localhost:8080/api/posts?id={id}
     @GetMapping
-    public ResponseEntity<List<Post>> getAllPosts() {
-        List<Post> posts = postService.getAllPosts();
+    public ResponseEntity<?> getPostById(@RequestParam long id) {
+        PostDto dto = postService.getPostById(id);
 
-        return new ResponseEntity<>(posts, HttpStatus.OK);
+        return new ResponseEntity<>(dto, HttpStatus.OK);
     }
+
+    // GET http://localhost:8080/api/posts
+//    @GetMapping
+//    public ResponseEntity<List<Post>> getAllPosts() {
+//        List<Post> posts = postService.getAllPosts();
+//
+//        return new ResponseEntity<>(posts, HttpStatus.OK);
+//    }
 }
