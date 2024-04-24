@@ -1,6 +1,5 @@
 package com.myblog.controller;
 
-import com.myblog.entity.Post;
 import com.myblog.payload.PostDto;
 import com.myblog.service.PostService;
 import org.springframework.http.HttpStatus;
@@ -32,18 +31,32 @@ public class PostController {
     }
 
     // GET http://localhost:8080/api/posts?id={id}
-    @GetMapping
-    public ResponseEntity<?> getPostById(@RequestParam long id) {
+    // @GetMapping
+    @GetMapping(params = "id")
+    public ResponseEntity<PostDto> getPostById(@RequestParam long id) {
         PostDto dto = postService.getPostById(id);
 
         return new ResponseEntity<>(dto, HttpStatus.OK);
     }
 
     // GET http://localhost:8080/api/posts
-//    @GetMapping
-//    public ResponseEntity<List<Post>> getAllPosts() {
-//        List<Post> posts = postService.getAllPosts();
-//
-//        return new ResponseEntity<>(posts, HttpStatus.OK);
-//    }
+    // @GetMapping(params = "all")
+    @GetMapping
+    public ResponseEntity<List<PostDto>> getAllPosts() {
+        List<PostDto> posts = postService.getAllPosts();
+
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    // Pagination Concept
+    // GET http://localhost:8080/api/posts?pageNo=0&pageSize=3
+    @GetMapping(params = {"pageNo", "pageSize"})
+    public ResponseEntity<List<PostDto>> getAllPosts(
+            @RequestParam(name = "pageNo", required = false, defaultValue = "1") int pageNo,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "3") int pageSize
+    ) {
+        List<PostDto> posts = postService.getAllPosts(pageNo, pageSize);
+
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 }

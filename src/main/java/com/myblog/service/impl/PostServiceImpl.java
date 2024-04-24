@@ -6,10 +6,15 @@ import com.myblog.payload.PostDto;
 import com.myblog.repository.PostRepository;
 import com.myblog.service.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Service
 public class PostServiceImpl implements PostService {
@@ -26,17 +31,21 @@ public class PostServiceImpl implements PostService {
 
     @Override
     public PostDto createPost(PostDto postDto) {
+        Post post = mapToEntity(postDto);
+
+        Post savedPost = postRepository.save(post);
+        PostDto dto = mapToDto(savedPost);
+
+        return dto;
+
+        /*
         Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
 
         Post savedPost = postRepository.save(post);
-        PostDto dto = mapPostToDto(savedPost);
 
-        return dto;
-
-        /*
         PostDto dto = new PostDto();
         dto.setId(savedPost.getId());
         dto.setTitle(savedPost.getTitle());
@@ -44,7 +53,7 @@ public class PostServiceImpl implements PostService {
         dto.setContent(savedPost.getContent());
 
         return dto;
-         */
+        */
     }
 
     @Override
@@ -53,10 +62,14 @@ public class PostServiceImpl implements PostService {
                 () -> new ResourceNotFoundException("Post Not Found with Id: " + id)
         );
 
-        PostDto dto = mapPostToDto(post);
+        PostDto dto = mapToDto(post);
         return dto;
 
         /*
+        Post post = postRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Post Not Found with Id: " + id)
+        );
+
         PostDto dto = new PostDto();
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
@@ -64,18 +77,47 @@ public class PostServiceImpl implements PostService {
         dto.setContent(post.getContent());
 
         return  dto;
+        */
+    }
+
+    @Override
+    public List<PostDto> getAllPosts() {
+        List<Post> posts = postRepository.findAll();
+
+        List<PostDto> dtos = posts.stream()
+                .map(post -> mapToDto(post))
+                .collect(Collectors.toList());
+
+        return dtos;
+
+        /*
+        List<PostDto> dtos = new ArrayList<>();
+
+        for (Post post : posts) {
+            PostDto dto = mapToDto(post);
+            dtos.add(dto);
+        }
+
+        return dtos;
          */
     }
 
     @Override
-    public List<Post> getAllPosts() {
-        List<Post> posts = postRepository.findAll();
+    public List<PostDto> getAllPosts(int pageNo, int pageSize) {
+        Pageable pageable = PageRequest.of(pageNo, pageSize);
 
-        return posts;
+        Page<Post> pagePost = postRepository.findAll(pageable);
+        List<Post> posts = pagePost.getContent();
+
+        List<PostDto> dtos = posts.stream()
+                .map(post -> mapToDto(post))
+                .collect(Collectors.toList());
+
+        return dtos;
     }
 
 
-    public PostDto mapPostToDto(Post post) {
+    public PostDto mapToDto(Post post) {
         PostDto dto = new PostDto();
 
         dto.setId(post.getId());
@@ -84,5 +126,15 @@ public class PostServiceImpl implements PostService {
         dto.setContent(post.getContent());
 
         return  dto;
+    }
+
+    public Post mapToEntity(PostDto postDto) {
+        Post post = new Post();
+
+        post.setTitle(postDto.getTitle());
+        post.setDescription(postDto.getDescription());
+        post.setContent(postDto.getContent());
+
+        return post;
     }
 }
