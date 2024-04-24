@@ -59,4 +59,31 @@ public class PostController {
 
         return new ResponseEntity<>(posts, HttpStatus.OK);
     }
+
+    // Pagination Concept with Sorting -> Ascending Order Bydefault
+    // GET http://localhost:8080/api/posts?pageNo=0&pageSize=3&sortBy=title
+    @GetMapping(params = {"pageNo", "pageSize", "sortBy"})
+    public ResponseEntity<List<PostDto>> getAllPosts(
+            @RequestParam(name = "pageNo", required = false, defaultValue = "1") int pageNo,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "3") int pageSize,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy
+    ) {
+        List<PostDto> posts = postService.getAllPosts(pageNo, pageSize, sortBy);
+
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
+
+    // Pagination Concept with Sorting with Directtion
+    // GET http://localhost:8080/api/posts?pageNo=0&pageSize=3&sortBy=title&sortDir=desc
+    @GetMapping(params = {"pageNo", "pageSize", "sortBy", "sortDir"})
+    public ResponseEntity<List<PostDto>> getAllPosts(
+            @RequestParam(name = "pageNo", required = false, defaultValue = "1") int pageNo,
+            @RequestParam(name = "pageSize", required = false, defaultValue = "3") int pageSize,
+            @RequestParam(name = "sortBy", required = false, defaultValue = "id") String sortBy,
+            @RequestParam(name = "sortDir", required = false, defaultValue = "id") String sortDir
+    ) {
+        List<PostDto> posts = postService.getAllPosts(pageNo, pageSize, sortBy, sortDir);
+
+        return new ResponseEntity<>(posts, HttpStatus.OK);
+    }
 }
