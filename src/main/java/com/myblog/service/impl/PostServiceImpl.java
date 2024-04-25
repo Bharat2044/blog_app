@@ -5,6 +5,7 @@ import com.myblog.exception.ResourceNotFoundException;
 import com.myblog.payload.PostDto;
 import com.myblog.repository.PostRepository;
 import com.myblog.service.PostService;
+import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,8 +27,11 @@ public class PostServiceImpl implements PostService {
     // Constructor based Dependency Injection
     private PostRepository postRepository;
 
-    public PostServiceImpl(PostRepository postRepository) {
+    private ModelMapper modelMapper;
+
+    public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;
+        this.modelMapper = modelMapper;
     }
 
     @Override
@@ -149,23 +153,31 @@ public class PostServiceImpl implements PostService {
 
 
     public PostDto mapToDto(Post post) {
-        PostDto dto = new PostDto();
+        PostDto dto = modelMapper.map(post, PostDto.class);
+        return dto;
 
+        /*
+        PostDto dto = new PostDto();
         dto.setId(post.getId());
         dto.setTitle(post.getTitle());
         dto.setDescription(post.getDescription());
         dto.setContent(post.getContent());
 
         return  dto;
+         */
     }
 
     public Post mapToEntity(PostDto postDto) {
-        Post post = new Post();
+        Post post = modelMapper.map(postDto, Post.class);
+        return post;
 
+        /*
+        Post post = new Post();
         post.setTitle(postDto.getTitle());
         post.setDescription(postDto.getDescription());
         post.setContent(postDto.getContent());
 
         return post;
+        */
     }
 }
