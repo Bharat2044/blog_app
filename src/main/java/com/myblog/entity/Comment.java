@@ -5,25 +5,22 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-
 @Entity
-@Table(name = "posts")
+@Table(name = "comments")
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class Post {
+public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
 
-    @Column(name = "title", nullable = false)
-    private String title;
+    private String text;
 
-    @Column(name = "description", nullable = false)
-    private String description;
+    private String email;
 
-    @Column(name = "content", nullable = false)
-    private String content;
-
-
+    // Many comments can belong to one post
+    @ManyToOne
+    @JoinColumn(name = "post_id")
+    private Post post;
 }
