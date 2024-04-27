@@ -6,16 +6,13 @@ import com.myblog.payload.PostDto;
 import com.myblog.repository.PostRepository;
 import com.myblog.service.PostService;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,9 +22,9 @@ public class PostServiceImpl implements PostService {
 //    private PostRepository postRepository;
 
     // Constructor based Dependency Injection
-    private PostRepository postRepository;
+    private final PostRepository postRepository;
 
-    private ModelMapper modelMapper;
+    private final ModelMapper modelMapper;
 
     public PostServiceImpl(PostRepository postRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;

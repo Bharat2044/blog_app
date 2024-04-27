@@ -16,7 +16,7 @@ public class PostController {
     //  private PostService postService;
 
     // Constructor based Dependency Injection
-    private PostService postService;
+    private final PostService postService;
 
     public PostController(PostService postService) {
         this.postService = postService;

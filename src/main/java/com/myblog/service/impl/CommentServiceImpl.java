@@ -13,9 +13,9 @@ import org.springframework.stereotype.Service;
 @Service
 public class CommentServiceImpl implements CommentService {
 
-    private PostRepository postRepository;
-    private CommentRepository commentRepository;
-    private ModelMapper modelMapper;
+    private final PostRepository postRepository;
+    private final CommentRepository commentRepository;
+    private final ModelMapper modelMapper;
 
     public CommentServiceImpl(PostRepository postRepository, CommentRepository commentRepository, ModelMapper modelMapper) {
         this.postRepository = postRepository;
@@ -49,22 +49,22 @@ public class CommentServiceImpl implements CommentService {
         }
     }
 
-@Override
-public CommentDto updateCommentById(long id, CommentDto commentDto) {
+    @Override
+    public CommentDto updateCommentById(long id, CommentDto commentDto) {
 
-    Comment comment = commentRepository.findById(id).orElseThrow(
-            () -> new ResourceNotFoundException("Comment Not Found with Id: " + id)
-    );
+        Comment comment = commentRepository.findById(id).orElseThrow(
+                () -> new ResourceNotFoundException("Comment Not Found with Id: " + id)
+        );
 
-    Comment c = mapToEntity(commentDto);
-    c.setId(comment.getId());
-    c.setPost(comment.getPost());
+        Comment c = mapToEntity(commentDto);
+        c.setId(comment.getId());
+        c.setPost(comment.getPost());
 
-    Comment savedComment = commentRepository.save(c);
-    CommentDto dto = mapToDto(savedComment);
+        Comment savedComment = commentRepository.save(c);
+        CommentDto dto = mapToDto(savedComment);
 
-    return dto;
-}
+        return dto;
+    }
 
     public CommentDto mapToDto(Comment comment) {
         CommentDto dto = modelMapper.map(comment, CommentDto.class);
